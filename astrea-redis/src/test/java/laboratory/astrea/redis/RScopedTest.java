@@ -17,7 +17,8 @@ public class RScopedTest {
 
         final var rValue = radiance.getValue("person#RValue", Person.class);
 
-        final var personRScope = new PersonRScope(rValue);
+        final var personRScope = new PersonRScoped();
+        personRScope.associate(rValue);
 
         personRScope.setAge(12);
         personRScope.setCreatedAt(LocalDate.now());

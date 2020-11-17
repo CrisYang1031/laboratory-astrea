@@ -12,12 +12,12 @@ public final class JavassistInstrument implements ClassInstrument {
 
     private final Set<CtClass> usedClass = new HashSet<>();
 
-    protected final CtClass ctClass;
+    protected final CtClass mainClass;
 
     JavassistInstrument(String className, Function<String, CtClass> classProvider) {
         final var ctClass = classProvider.apply(className);
         usedClass.add(ctClass);
-        this.ctClass = ctClass;
+        this.mainClass = ctClass;
     }
 
 
@@ -28,26 +28,32 @@ public final class JavassistInstrument implements ClassInstrument {
 
         final var interfaces = classes.filter(CtClass::isInterface);
 
-        Javassist.setInterface(ctClass, interfaces);
+        Javassist.setInterface(mainClass, interfaces);
 
         return this;
     }
 
     @Override
     public ClassInstrument setSuperClass(String superClassName) {
-        return null;
+
+        final var superClass = Javassist.getClass(superClassName);
+        usedClass.add(superClass);
+
+        Javassist.setSuperClass(mainClass, superClass);
+        return this;
     }
 
     @Override
     public ClassInstrument addField(String source) {
-        return null;
+        Javassist.addField(mainClass, source);
+        return this;
     }
 
     @Override
     public ClassInstrument addMethod(String source) {
-        return null;
+        Javassist.addMethod(mainClass, source);
+        return this;
     }
-
 
     @Override
     public void cleanup() {
@@ -57,12 +63,12 @@ public final class JavassistInstrument implements ClassInstrument {
 
     @Override
     public Class<?> toClass() {
-        return null;
+        return Javassist.toClass(mainClass);
     }
 
     @Override
-    public byte[] byteCodes() {
-        return new byte[0];
+    public byte[] bytecode() {
+        return Javassist.toBytecode(mainClass);
     }
 
 

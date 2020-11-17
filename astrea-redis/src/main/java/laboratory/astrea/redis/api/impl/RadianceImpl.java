@@ -16,7 +16,7 @@ public final class RadianceImpl implements Radiance {
 
     private final RFactory rFactory = new RFactoryImpl();
 
-    private final Map<Thread, List<RScope>> scopeAggregation = new HashMap<>();
+    private final Map<Thread, List<RScoped>> scopeAggregation = new HashMap<>();
 
     public RadianceImpl(SyncConnectionContext syncConnectionContext) {
         final var redisSyncOperationFactory = syncConnectionContext.syncOperationFactory();
@@ -44,7 +44,7 @@ public final class RadianceImpl implements Radiance {
         try {
             runnable.run();
 
-            scopeAggregation.get(currentThread).forEach(RScope::commit);
+            scopeAggregation.get(currentThread).forEach(RScoped::commit);
 
         } finally {
 
@@ -65,7 +65,7 @@ public final class RadianceImpl implements Radiance {
             throw new IllegalStateException("can not get a scoped value in without redis scope");
         }
 
-        scopeAggregation.put(currentThread, scopeList.prepend((RScope) scopedValue));
+        scopeAggregation.put(currentThread, scopeList.prepend((RScoped) scopedValue));
 
         return scopedValue;
     }

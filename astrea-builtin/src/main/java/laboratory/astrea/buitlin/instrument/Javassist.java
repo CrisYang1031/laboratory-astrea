@@ -23,7 +23,6 @@ class Javassist {
         return CLASS_POOL.makeClass(className);
     }
 
-
     public static CtClass getClass(String className) {
         return Try(() -> CLASS_POOL.getCtClass(className));
     }
@@ -36,22 +35,16 @@ class Javassist {
         ctClass.setInterfaces(array(interfaces, CtClass[]::new));
     }
 
+    public static void setSuperClass(CtClass ctClass, CtClass superClass) {
+        Try(() -> ctClass.setSuperclass(superClass));
+    }
+
     public static void addField(CtClass ctClass, String src) {
-        try {
-            ctClass.addField(makeField(ctClass, src));
-        } catch (CannotCompileException e) {
-            log.error("addField failure", e);
-            sneakThrow(e);
-        }
+        Try(() -> ctClass.addField(makeField(ctClass, src)));
     }
 
     public static void addMethod(CtClass ctClass, String src) {
-        try {
-            ctClass.addMethod(makeMethod(ctClass, src));
-        } catch (CannotCompileException e) {
-            log.error("addMethod failure", e);
-            sneakThrow(e);
-        }
+        Try(() -> ctClass.addMethod(makeMethod(ctClass, src)));
     }
 
     public static CtField makeField(CtClass ctClass, String src) {
@@ -65,4 +58,10 @@ class Javassist {
     public static Class<?> toClass(CtClass ctClass) {
         return Try((CheckedFunction0<? extends Class<?>>) ctClass::toClass);
     }
+
+    public static byte[] toBytecode(CtClass ctClass) {
+        return Try((CheckedFunction0<byte[]>) ctClass::toBytecode);
+    }
+
+
 }

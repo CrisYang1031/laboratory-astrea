@@ -21,6 +21,6 @@ public interface ClassInstrument {
     Class<?> toClass();
 
 
-    byte[] byteCodes();
+    byte[] bytecode();
 
 }
