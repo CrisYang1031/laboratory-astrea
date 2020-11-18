@@ -2,12 +2,14 @@ package laboratory.astrea.buitlin.instrument;
 
 import io.vavr.CheckedFunction0;
 import io.vavr.collection.List;
-import javassist.*;
+import javassist.ClassPool;
+import javassist.CtClass;
+import javassist.CtField;
+import javassist.CtMethod;
 import lombok.extern.slf4j.Slf4j;
 
 import static laboratory.astrea.buitlin.core.Functions.Try;
 import static laboratory.astrea.buitlin.core.KCollection.array;
-import static laboratory.astrea.buitlin.core.TopLevelFunctions.sneakThrow;
 
 @Slf4j
 class Javassist {

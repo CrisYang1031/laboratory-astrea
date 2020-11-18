@@ -1,6 +1,5 @@
 package laboratory.astrea.redis.operation;
 
-import laboratory.astrea.buitlin.core.TopLevelFunctions;
 import laboratory.astrea.redis.RedisLockInterruptedException;
 import laboratory.astrea.redis.RedisLockTimeoutException;
 import laboratory.astrea.redis.SyncConnectionContext;
@@ -13,6 +12,8 @@ import java.util.concurrent.ConcurrentSkipListMap;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
+
+import static laboratory.astrea.buitlin.core.TopLevelFunctions.sneakThrow;
 
 
 @Slf4j
@@ -64,7 +65,7 @@ final class SynchronousLockOperation implements LockOperation {
                     if (Thread.interrupted()) {
                         throw new RedisLockInterruptedException("redis locking operation interrupted");
                     }
-                    TopLevelFunctions.sneakThrow(e);
+                    sneakThrow(e);
                 }
             }
             //到这里代表已经成功获取到了锁，执行代码逻辑
@@ -88,7 +89,7 @@ final class SynchronousLockOperation implements LockOperation {
             semaphore.release();
         } else {
             semaphoreMap.remove(key);
-            log.info("has not queued threads");
+            log.debug("has not queued threads");
         }
     }
 

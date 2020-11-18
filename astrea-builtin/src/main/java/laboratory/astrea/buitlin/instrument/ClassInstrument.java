@@ -1,5 +1,7 @@
 package laboratory.astrea.buitlin.instrument;
 
+import java.lang.ref.Cleaner;
+
 public interface ClassInstrument {
 
 
@@ -15,12 +17,11 @@ public interface ClassInstrument {
     ClassInstrument addMethod(String source);
 
 
-    void cleanup();
-
-
     Class<?> toClass();
 
 
     byte[] bytecode();
 
+
+    Cleaner CLASS_INSTRUMENT_CLEANER = Cleaner.create();
 }

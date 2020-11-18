@@ -1,19 +1,20 @@
 package laboratory.astrea.redis;
 
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import laboratory.astrea.buitlin.core.Json;
-import org.springframework.util.ClassUtils;
-
-import java.math.BigDecimal;
-import java.util.List;
+import java.time.LocalDate;
 
 public final class FreeTest {
 
-
     public static void main(String[] args) {
 
+        final var personWrapped = new Wrapped<Person>();
 
+        final var person = new Person();
+        person.setAge(2);
+        person.setCreatedAt(LocalDate.now());
+        person.setName("TensorFlow");
+
+        personWrapped.setData(person);
+        personWrapped.setResult(true);
 
     }
 }

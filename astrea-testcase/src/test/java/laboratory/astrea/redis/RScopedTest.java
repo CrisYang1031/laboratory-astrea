@@ -3,11 +3,9 @@ package laboratory.astrea.redis;
 
 import laboratory.astrea.redis.api.Radiance;
 import laboratory.astrea.test.TestKit;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import java.time.LocalDate;
 
-@SpringBootApplication(proxyBeanMethods = false)
 public class RScopedTest {
 
     public static void main(String[] args) {

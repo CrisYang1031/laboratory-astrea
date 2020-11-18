@@ -40,7 +40,7 @@ public @interface RCacheable {
         WeakValue("weakValues"),
 
         ;
-        public final String Value;
+        public final String specification;
     }
 
 }

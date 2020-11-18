@@ -1,7 +1,6 @@
 package laboratory.astrea.redis.api.impl;
 
 import io.vavr.collection.List;
-import laboratory.astrea.buitlin.core.TopLevelFunctions;
 import laboratory.astrea.redis.SyncConnectionContext;
 import laboratory.astrea.redis.api.RFactory;
 import laboratory.astrea.redis.api.RScoped;
@@ -13,8 +12,6 @@ import org.springframework.core.ParameterizedTypeReference;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static laboratory.astrea.buitlin.core.Parameterized.rawType;
 
 public final class RadianceImpl implements Radiance {
 
@@ -69,6 +66,25 @@ public final class RadianceImpl implements Radiance {
 
         final var scopedValue = rFactory.proxyScopedValue(name, typeReference, this::getValue);
 
+        recordScoped((RScoped) scopedValue);
+
+        return scopedValue;
+    }
+
+
+    @Override
+    public <T> T scopedValue(String name, ParameterizedTypeReference<T> typeReference) {
+
+        final var scopedValue = rFactory.proxyScopedValue(name, typeReference, this::getValue);
+
+        recordScoped((RScoped) scopedValue);
+
+        return scopedValue;
+    }
+
+
+    private <T> void recordScoped(RScoped scopedValue) {
+
         final var currentThread = Thread.currentThread();
 
         final var scopeList = scopeAggregation.get(currentThread);
@@ -77,14 +93,6 @@ public final class RadianceImpl implements Radiance {
             throw new IllegalStateException("can not get a scoped value in without redis scope");
         }
 
-        scopeAggregation.put(currentThread, scopeList.prepend((RScoped) scopedValue));
-
-        return scopedValue;
-    }
-
-    @Override
-    public <T> T scopedValue(String name, ParameterizedTypeReference<T> typeReference) {
-
-        return scopedValue(name, TopLevelFunctions.<Class<T>>cast(rawType(typeReference)));
+        scopeAggregation.put(currentThread, scopeList.prepend(scopedValue));
     }
 }

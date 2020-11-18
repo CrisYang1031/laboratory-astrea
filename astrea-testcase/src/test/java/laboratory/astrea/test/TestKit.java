@@ -28,6 +28,7 @@ public final class TestKit {
                 .run("--spring.output.ansi.enabled=always",
                         "--logging.level.io.lettuce.core.RedisChannelHandler=info",
                         "--logging.level.io.lettuce.core=info",
+                        "--logging.level.laboratory.astrea.redis=debug",
                         "");
     }
 

@@ -1,5 +1,6 @@
 package laboratory.astrea.redis;
 
+import laboratory.astrea.redis.api.RAny;
 import laboratory.astrea.redis.api.RScoped;
 import laboratory.astrea.redis.api.RValue;
 import laboratory.astrea.redis.api.Radiance;
@@ -11,14 +12,14 @@ import static laboratory.astrea.buitlin.instrument.ClassInstrumentFactory.Javass
 
 public final class PersonScopedProxyTest {
 
-    public static void main(String[] args)  {
+    public static void main(String[] args) {
 
         final Class<?> clazz = Javassist_.create("laboratory.astrea.redis.PersonRScope$Javassist")
                 .addInterfaces(RScoped.class.getName())
                 .setSuperClass(Person.class.getName())
                 .addField(String.format("private %s rValue;", RValue.class.getName()))
                 .addMethod("public void commit() { rValue.set(this); }")
-                .addMethod(String.format("public void associate(Object rObject) { this.rValue = (%s) rObject; }", RValue.class.getName()))
+                .addMethod(String.format("public void associate(%s rObject) { this.rValue = (%s) rObject; }", RAny.class.getName(), RValue.class.getName()))
                 .toClass();
 
         final Object instance = BeanUtils.instantiateClass(clazz);
