@@ -1,6 +1,8 @@
 package laboratory.astrea.redis.api.impl;
 
 import io.vavr.Predicates;
+import laboratory.astrea.buitlin.core.Json;
+import laboratory.astrea.buitlin.core.Parameterized;
 import laboratory.astrea.redis.api.RValue;
 import laboratory.astrea.redis.codec.StringCodec;
 import laboratory.astrea.redis.operation.CommonOperation;
@@ -9,18 +11,34 @@ import org.springframework.core.ParameterizedTypeReference;
 
 import java.util.function.Supplier;
 
+import static laboratory.astrea.buitlin.core.TopLevelFunctions.cast;
+
 final class RValueImpl<T> extends RCommonImpl implements RValue<T> {
 
     private final Object typeReference;
     private final ValueOperationExtension operation;
     private final StringCodec stringCodec;
+    private final String defaultValue;
 
     protected RValueImpl(String name, Object typeReference, ValueOperationExtension valueOperationExtension, StringCodec stringCodec) {
         super(name);
         this.typeReference = typeReference;
         this.operation = valueOperationExtension;
         this.stringCodec = stringCodec;
+        this.defaultValue = assignDefaultValue();
         typeSafe(typeReference);
+    }
+
+    private String assignDefaultValue() {
+        Class<?> clazz;
+
+        if (typeReference.getClass() == Class.class) {
+            clazz = cast(typeReference);
+        } else {
+            clazz = Parameterized.rawType(cast(typeReference));
+        }
+
+        return clazz.isArray() || Iterable.class.isAssignableFrom(clazz) ? Json.EMPTY_ARRAY : Json.EMPTY_OBJECT;
     }
 
 
@@ -32,6 +50,11 @@ final class RValueImpl<T> extends RCommonImpl implements RValue<T> {
 
     @Override
     public T get() {
+        return deserialize(operation.getOrDefault(name, defaultValue));
+    }
+
+    @Override
+    public T getIfPresent() {
         return deserialize(operation.get(name));
     }
 

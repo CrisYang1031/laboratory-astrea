@@ -1,6 +1,7 @@
 package laboratory.astrea.redis;
 
 
+import laboratory.astrea.redis.api.RAny;
 import laboratory.astrea.redis.api.RScoped;
 import laboratory.astrea.redis.api.RValue;
 
@@ -12,8 +13,10 @@ public final class PersonRScoped extends Person implements RScoped {
     public void commit() { rValue.set(this); }
 
     @Override
-    public void associate(Object rObject) {
+    public void associate(RAny rAny) {
         //noinspection unchecked
-        this.rValue = (RValue<Person>) rObject;
+        this.rValue = (RValue<Person>) rAny;
     }
+
+
 }

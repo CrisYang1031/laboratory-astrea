@@ -22,7 +22,8 @@ import static laboratory.astrea.buitlin.core.Functions.Try;
 
 public final class Json {
 
-    private static final String EMPTY_OBJECT = "{}";
+    public static final String EMPTY_OBJECT = "{}";
+    public static final String EMPTY_ARRAY = "[]";
     private static final SimpleModule PARAMETER_NAMES_MODULE = new ParameterNamesModule();
     private static final SimpleModule JAVA_TIME_MODULE = new JavaTimeModule();
     private static final Jdk8Module JDK_8_MODULE = new Jdk8Module();

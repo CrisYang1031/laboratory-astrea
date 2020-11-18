@@ -6,5 +6,5 @@ public interface RScoped {
     void commit();
 
 
-    void associate(Object rObject);
+    void associate(RAny rAny);
 }

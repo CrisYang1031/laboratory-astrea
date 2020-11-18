@@ -1,7 +1,6 @@
-package laboratory.astrea.redis;
+package laboratory.astrea.test;
 
 import io.vavr.CheckedConsumer;
-import laboratory.astrea.test.AstreaApplication;
 import lombok.extern.slf4j.Slf4j;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.boot.WebApplicationType;

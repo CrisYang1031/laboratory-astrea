@@ -6,8 +6,9 @@ import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.api.sync.RedisCommands;
 import io.lettuce.core.pubsub.StatefulRedisPubSubConnection;
 import io.lettuce.core.resource.ClientResources;
+import org.springframework.beans.factory.DisposableBean;
 
-final class SyncConnectionContextImpl implements SyncConnectionContext {
+final class SyncConnectionContextImpl implements SyncConnectionContext, DisposableBean {
 
     private final RedisURI redisUri;
 
@@ -54,4 +55,8 @@ final class SyncConnectionContextImpl implements SyncConnectionContext {
     }
 
 
+    @Override
+    public void destroy() {
+        redisClient.shutdown();
+    }
 }

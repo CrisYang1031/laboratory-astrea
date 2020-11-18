@@ -30,9 +30,9 @@ public final class Functions {
 
     @SuppressWarnings("unchecked")
     @SafeVarargs
-    public static <S, T extends S> Predicate<S> instanceOf(Class<T> clazz, Predicate<T>... andPredicates) {
+    public static <T> Predicate<? super T> instanceOf(Class<T> clazz, Predicate<T>... andPredicates) {
 
-        final Predicate<S> predicate = clazz::isInstance;
+        final Predicate<? super T> predicate = clazz::isInstance;
 
         if (andPredicates == null) {
             return predicate;

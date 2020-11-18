@@ -13,6 +13,11 @@ public interface ValueOperation extends CommonOperation {
     String get(String key);
 
 
+    default String getOrDefault(String key, String defaultValue) {
+        final var value = get(key);
+        return value == null ? defaultValue : value;
+    }
+
     void set(String key, String value);
 
 

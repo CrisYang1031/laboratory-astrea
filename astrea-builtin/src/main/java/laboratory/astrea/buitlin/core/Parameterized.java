@@ -1,6 +1,7 @@
 package laboratory.astrea.buitlin.core;
 
 import org.jetbrains.annotations.NotNull;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.core.ResolvableType;
 
 import java.lang.reflect.Type;
@@ -32,8 +33,11 @@ public final class Parameterized {
         return ResolvableType.forClassWithGenerics(Map.class, keyClass, valueClass).getType();
     }
 
-    public static <T> Class<T> rawTypeFromSuperGeneric(@NotNull Object instance){
+    public static <T> Class<T> rawTypeFromSuperGeneric(@NotNull Object instance) {
         return cast(ResolvableType.forInstance(instance).getSuperType().getGeneric(0).getRawClass());
     }
 
+    public static <T> Class<T> rawType(ParameterizedTypeReference<T> typeReference) {
+        return cast(ResolvableType.forType(typeReference.getType()).resolve());
+    }
 }

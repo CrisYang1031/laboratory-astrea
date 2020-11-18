@@ -9,6 +9,10 @@ public interface RValue<T> extends RExpirable, RAny {
 
 
 
+    T getIfPresent();
+
+
+
     void set(T value);
 
 

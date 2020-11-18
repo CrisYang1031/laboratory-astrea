@@ -9,7 +9,7 @@ public class Person {
 
     private String name;
 
-    private Integer age;
+    private int age;
 
     private LocalDate createdAt;
 }

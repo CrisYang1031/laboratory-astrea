@@ -19,6 +19,7 @@ final class SynchronousValueOperation extends SynchronousCommonOperation impleme
         return redisCommands.get(key);
     }
 
+
     @Override
     public void set(String key, String value) {
         redisCommands.set(key, value);

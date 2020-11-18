@@ -13,7 +13,7 @@ public interface Radiance {
     <T> RValue<T> getValue(String name, ParameterizedTypeReference<T> typeReference);
 
 
-    void radianceScope(Runnable runnable);
+    void withScope(Runnable runnable);
 
 
     <T> T scopedValue(String name, Class<T> typeReference);

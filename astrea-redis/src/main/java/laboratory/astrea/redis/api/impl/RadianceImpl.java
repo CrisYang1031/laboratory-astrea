@@ -1,8 +1,12 @@
 package laboratory.astrea.redis.api.impl;
 
 import io.vavr.collection.List;
+import laboratory.astrea.buitlin.core.TopLevelFunctions;
 import laboratory.astrea.redis.SyncConnectionContext;
-import laboratory.astrea.redis.api.*;
+import laboratory.astrea.redis.api.RFactory;
+import laboratory.astrea.redis.api.RScoped;
+import laboratory.astrea.redis.api.RValue;
+import laboratory.astrea.redis.api.Radiance;
 import laboratory.astrea.redis.codec.StringCodec;
 import laboratory.astrea.redis.operation.ValueOperationExtension;
 import org.springframework.core.ParameterizedTypeReference;
@@ -10,18 +14,26 @@ import org.springframework.core.ParameterizedTypeReference;
 import java.util.HashMap;
 import java.util.Map;
 
+import static laboratory.astrea.buitlin.core.Parameterized.rawType;
+
 public final class RadianceImpl implements Radiance {
 
     private final ValueOperationExtension valueExtension;
 
-    private final RFactory rFactory = new RFactoryImpl();
+    private final RFactory rFactory;
 
     private final Map<Thread, List<RScoped>> scopeAggregation = new HashMap<>();
 
     public RadianceImpl(SyncConnectionContext syncConnectionContext) {
         final var redisSyncOperationFactory = syncConnectionContext.syncOperationFactory();
         this.valueExtension = redisSyncOperationFactory.valueExtension();
+        this.rFactory = RFactories.Javassist.getFactory();
+    }
 
+    public RadianceImpl(SyncConnectionContext syncConnectionContext, RFactory rFactory) {
+        final var redisSyncOperationFactory = syncConnectionContext.syncOperationFactory();
+        this.valueExtension = redisSyncOperationFactory.valueExtension();
+        this.rFactory = rFactory;
     }
 
     @Override
@@ -35,7 +47,7 @@ public final class RadianceImpl implements Radiance {
     }
 
     @Override
-    public void radianceScope(Runnable runnable) {
+    public void withScope(Runnable runnable) {
 
         final var currentThread = Thread.currentThread();
 
@@ -55,7 +67,7 @@ public final class RadianceImpl implements Radiance {
     @Override
     public <T> T scopedValue(String name, Class<T> typeReference) {
 
-        final var scopedValue = rFactory.proxyScopedValue(name, typeReference, getValue(name, typeReference));
+        final var scopedValue = rFactory.proxyScopedValue(name, typeReference, this::getValue);
 
         final var currentThread = Thread.currentThread();
 
@@ -72,6 +84,7 @@ public final class RadianceImpl implements Radiance {
 
     @Override
     public <T> T scopedValue(String name, ParameterizedTypeReference<T> typeReference) {
-        return null;
+
+        return scopedValue(name, TopLevelFunctions.<Class<T>>cast(rawType(typeReference)));
     }
 }
