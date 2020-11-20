@@ -2,8 +2,8 @@ package laboratory.astrea.buitlin.core;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.File;
 import java.nio.file.FileSystems;
+import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -21,44 +21,15 @@ import static laboratory.astrea.buitlin.core.Functions.Try;
 @Slf4j
 public final class Files {
 
-    private static final String PATH_TO_SAVE;
-
-    private static final String FILE_SEPARATOR =  FileSystems.getDefault().getSeparator();
-
-    static {
-        final var dir = System.getProperty("application.dir");
-        PATH_TO_SAVE = dir == null ? "" : dir;
-    }
+    private static final String FILE_SEPARATOR = FileSystems.getDefault().getSeparator();
 
     private Files() {
         throw new UnsupportedOperationException();
     }
 
-    public static void appendLines(String filename, Collection<String> lines) {
-
-        if (lines.isEmpty()) return;
-
-        final var path = Paths.get(PATH_TO_SAVE, filename);
-
-        createParentFileIfNecessary(path);
-
-        Try(() -> java.nio.file.Files.write(path, lines, CREATE, APPEND));
-
-        log.debug("writeLines size: {}", lines.size());
-    }
-
-    public static void write(String filename, byte[] content) {
-        final var path = Paths.get(PATH_TO_SAVE, filename);
-
-        createParentFileIfNecessary(path);
-
-        Try(() -> java.nio.file.Files.write(path, content, WRITE));
-
-        log.debug(" content has been written to {}", filename);
-    }
 
     public static void createParentFileIfNecessary(String filename) {
-        if (filename.contains(File.separator))
+        if (filename.contains(FILE_SEPARATOR))
             createParentFileIfNecessary(Paths.get(filename));
     }
 
@@ -71,42 +42,61 @@ public final class Files {
         }
     }
 
+    public static void appendLines(String filename, Collection<String> lines) {
+        writeLines(Paths.get(filename), lines, true, CREATE, APPEND);
+    }
+
     public static void writeLines(String filename, Collection<String> lines) {
-        final var path = Paths.get(PATH_TO_SAVE, filename);
-        Try(() -> java.nio.file.Files.write(path, lines, CREATE, WRITE));
+        writeLines(Paths.get(filename), lines, true, CREATE, TRUNCATE_EXISTING);
     }
 
-    public static void writeLinesIfNotExists(String filename, Collection<String> lines) {
-        final var path = Paths.get(PATH_TO_SAVE, filename);
-
-        if (notExists(path))
-            Try(() -> java.nio.file.Files.write(path, lines, CREATE, APPEND));
+    public static void writeLinesIfAbsent(String filename, Collection<String> lines) {
+        writeLinesIfAbsent(Paths.get(filename), lines);
     }
 
-    public static void writeLinesIfNotExists(Path path, Collection<String> lines) {
-
-        createParentFileIfNecessary(path);
-
-        if (notExists(path))
-            Try(() -> java.nio.file.Files.write(path, lines, CREATE, APPEND));
+    public static void writeLinesIfAbsent(Path path, Collection<String> lines) {
+        writeLines(path, lines, false, CREATE, WRITE);
     }
 
-    public static void writeStringIfNotExists(Path path, String content) {
+    public static void writeLines(Path path, Collection<String> lines, boolean override, OpenOption... options) {
 
-        createParentFileIfNecessary(path);
+        if (lines.isEmpty() && !override) {
+            return;
+        }
 
-        if (notExists(path))
-            Try(() -> java.nio.file.Files.writeString(path, content, CREATE, WRITE));
+        final var exists = exists(path);
+
+        if (!exists || override) {
+            createParentFileIfNecessary(path);
+            Try(() -> java.nio.file.Files.write(path, lines, options));
+        }
     }
 
+
+    public static void writeStringIfAbsent(Path path, String content) {
+        writeString(path, content, false, CREATE, WRITE);
+    }
+
+    public static void writeString(Path path, String string, boolean override, OpenOption... options) {
+
+        if (string.isEmpty() && !override) {
+            return;
+        }
+
+        final var exists = exists(path);
+
+        if (!exists || override) {
+            createParentFileIfNecessary(path);
+            Try(() -> java.nio.file.Files.writeString(path, string, options));
+        }
+    }
 
     public static List<String> readLines(String filename) {
-        final var path = Paths.get(PATH_TO_SAVE, filename);
-
+        final var path = Paths.get(filename);
         return readLines(path);
     }
 
-    public static List<String> readLines(Path path){
+    public static List<String> readLines(Path path) {
         if (notExists(path)) {
             return Collections.emptyList();
         }
@@ -114,7 +104,7 @@ public final class Files {
     }
 
 
-    public static String readString(Path path){
+    public static String readString(Path path) {
         if (notExists(path)) {
             return "";
         }
@@ -122,9 +112,8 @@ public final class Files {
     }
 
 
-
     public static Stream<String> lines(String filename) {
-        final var path = Paths.get(PATH_TO_SAVE, filename);
+        final var path = Paths.get(filename);
 
         if (notExists(path)) {
             return Stream.empty();
@@ -139,7 +128,7 @@ public final class Files {
 
     public static Optional<String> lastLine(String filename) {
         return Optional.of(filename)
-                .map(name -> Paths.get(PATH_TO_SAVE, name))
+                .map(Paths::get)
                 .filter(Files::exists)
                 .map(path -> Try(() -> java.nio.file.Files.readAllLines(path)))
                 .filter(Predicate.not(List::isEmpty))
@@ -184,7 +173,7 @@ public final class Files {
         do {
             list = list.prepend(parent.getFileName().toString());
             parent = parent.getParent();
-            if (parent == null){
+            if (parent == null) {
                 throw new IllegalArgumentException(String.format("can not find relative package %s in %s", path, ancestorPath));
             }
         } while (!ancestorPath.equals(parent));
@@ -192,11 +181,11 @@ public final class Files {
         return list.mkString(".");
     }
 
-    public static Path parsePackage(String packageName){
+    public static Path parsePackage(String packageName) {
         return Paths.get(packageName.replaceAll("\\.", FILE_SEPARATOR));
     }
 
-    public static Path synthesize(Path parent, Path path){
+    public static Path synthesize(Path parent, Path path) {
         return Paths.get(parent.toString() + FILE_SEPARATOR + path.toString());
     }
 
