@@ -63,8 +63,6 @@ final class JavassistRProxyFactory implements RProxyFactory {
                 throw new IllegalArgumentException("only non-final, concrete type can be accepted by RFactory - source class is: " + type);
             }
 
-            System.out.println("prepare to generate proxy class ");
-
             return Javassist_.create(nameFunction.apply(type))
                     .setInterfaces(RScoped.class.getName())
                     .setSuperClass(type.getName())
