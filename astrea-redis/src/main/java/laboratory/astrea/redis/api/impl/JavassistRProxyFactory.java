@@ -41,7 +41,8 @@ final class JavassistRProxyFactory implements RProxyFactory {
                     .setSuperClass(type.getName())
                     .addField(String.format("private %s rValue;", RValue.class.getName()))
                     .addMethod("public void commit() { rValue.set(this); }")
-                    .addMethod(String.format("public void associate(%s rObject) { this.rValue = (%s) rObject; }", RAny.class.getName(), RValue.class.getName())).toClass();
+                    .addMethod(String.format("public void associate(%s rObject) { this.rValue = (%s) rObject; }", RAny.class.getName(), RValue.class.getName()))
+                    .toClass();
         });
 
         final var rValue = rValueFunction.apply(name, cast(clazz));
@@ -69,14 +70,13 @@ final class JavassistRProxyFactory implements RProxyFactory {
                     .setGenericType(InstrumentGenericType.of(type.getName()), List.of(InstrumentGenericType.nonGeneric(RScoped.class.getName())))
                     .addField(String.format("private %s rValue;", RValue.class.getName()))
                     .addMethod("public void commit() { rValue.set(this); }")
-                    .addMethod(String.format("public void associate(%s rObject) { this.rValue = (%s) rObject; }", RAny.class.getName(), RValue.class.getName())).toClass();
+                    .addMethod(String.format("public void associate(%s rObject) { this.rValue = (%s) rObject; }", RAny.class.getName(), RValue.class.getName()))
+                    .toClass();
         });
 
         final var actualGenericType = actualGenericType(typeReference);
 
         final var synthesizeTypeReference = synthesizeGeneric(clazz, actualGenericType);
-
-        System.out.println(synthesizeTypeReference);
 
         final var rValue = rValueFunction.apply(name, cast(synthesizeTypeReference));
 

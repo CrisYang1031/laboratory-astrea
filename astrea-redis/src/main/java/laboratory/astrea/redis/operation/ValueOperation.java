@@ -36,6 +36,12 @@ public interface ValueOperation extends CommonOperation {
     Long increment(String key, long amount);
 
 
+    Long decrement(String key);
+
+
+    Long decrement(String key, long amount);
+
+
     default boolean setIfAbsent(String key, String value) {
         return setIfAbsent(key, Duration.ZERO, value);
     }

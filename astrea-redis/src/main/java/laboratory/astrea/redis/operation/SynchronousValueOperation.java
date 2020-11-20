@@ -52,6 +52,16 @@ final class SynchronousValueOperation extends SynchronousCommonOperation impleme
         return redisCommands.incrby(key, amount);
     }
 
+    @Override
+    public Long decrement(String key) {
+        return redisCommands.decr(key);
+    }
+
+    @Override
+    public Long decrement(String key, long amount) {
+        return redisCommands.decrby(key, amount);
+    }
+
 
     @Override
     public boolean setIfAbsent(String key, Duration timeout, String value) {
