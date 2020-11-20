@@ -1,20 +1,21 @@
 package laboratory.astrea.redis;
 
-import java.time.LocalDate;
+import laboratory.astrea.buitlin.core.Parameterized;
+import org.springframework.core.ParameterizedTypeReference;
+
+import java.util.List;
 
 public final class FreeTest {
 
     public static void main(String[] args) {
 
-        final var personWrapped = new Wrapped<Person>();
+        final ParameterizedTypeReference<List<Person>> typeReference = new ParameterizedTypeReference<>() {
+        };
 
-        final var person = new Person();
-        person.setAge(2);
-        person.setCreatedAt(LocalDate.now());
-        person.setName("TensorFlow");
+        final var synthesizeGeneric = Parameterized.synthesizeGeneric(Wrapped.class, typeReference);
 
-        personWrapped.setData(person);
-        personWrapped.setResult(true);
+        System.out.println(synthesizeGeneric);
+
 
     }
 }

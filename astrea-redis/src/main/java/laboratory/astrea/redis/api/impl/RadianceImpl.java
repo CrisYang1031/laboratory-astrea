@@ -2,7 +2,7 @@ package laboratory.astrea.redis.api.impl;
 
 import io.vavr.collection.List;
 import laboratory.astrea.redis.SyncConnectionContext;
-import laboratory.astrea.redis.api.RFactory;
+import laboratory.astrea.redis.api.RProxyFactory;
 import laboratory.astrea.redis.api.RScoped;
 import laboratory.astrea.redis.api.RValue;
 import laboratory.astrea.redis.api.Radiance;
@@ -17,20 +17,20 @@ public final class RadianceImpl implements Radiance {
 
     private final ValueOperationExtension valueExtension;
 
-    private final RFactory rFactory;
+    private final RProxyFactory rProxyFactory;
 
     private final Map<Thread, List<RScoped>> scopeAggregation = new HashMap<>();
 
     public RadianceImpl(SyncConnectionContext syncConnectionContext) {
         final var redisSyncOperationFactory = syncConnectionContext.syncOperationFactory();
         this.valueExtension = redisSyncOperationFactory.valueExtension();
-        this.rFactory = RFactories.Javassist.getFactory();
+        this.rProxyFactory = RFactories.Javassist.getFactory();
     }
 
-    public RadianceImpl(SyncConnectionContext syncConnectionContext, RFactory rFactory) {
+    public RadianceImpl(SyncConnectionContext syncConnectionContext, RProxyFactory rProxyFactory) {
         final var redisSyncOperationFactory = syncConnectionContext.syncOperationFactory();
         this.valueExtension = redisSyncOperationFactory.valueExtension();
-        this.rFactory = rFactory;
+        this.rProxyFactory = rProxyFactory;
     }
 
     @Override
@@ -64,7 +64,7 @@ public final class RadianceImpl implements Radiance {
     @Override
     public <T> T scopedValue(String name, Class<T> typeReference) {
 
-        final var scopedValue = rFactory.proxyScopedValue(name, typeReference, this::getValue);
+        final var scopedValue = rProxyFactory.proxyScopedValue(name, typeReference, this::getValue);
 
         recordScoped((RScoped) scopedValue);
 
@@ -75,7 +75,7 @@ public final class RadianceImpl implements Radiance {
     @Override
     public <T> T scopedValue(String name, ParameterizedTypeReference<T> typeReference) {
 
-        final var scopedValue = rFactory.proxyScopedValue(name, typeReference, this::getValue);
+        final var scopedValue = rProxyFactory.proxyScopedValue(name, typeReference, this::getValue);
 
         recordScoped((RScoped) scopedValue);
 

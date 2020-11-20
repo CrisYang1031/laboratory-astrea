@@ -16,6 +16,7 @@ import java.io.File;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Predicate;
 
 import static laboratory.astrea.buitlin.core.Functions.Try;
@@ -53,63 +54,66 @@ public final class Json {
         if (value instanceof String) {
             return (String) value;
         }
-        return Functions.Try(() -> OBJECT_MAPPER.writeValueAsString(value));
+        return Try(() -> OBJECT_MAPPER.writeValueAsString(value));
     }
 
     public static <T> T jsonValue(String jsonString, Class<T> clazz) {
-        return Functions.Try(() -> OBJECT_MAPPER.readValue(jsonString, clazz));
+        return Try(() -> OBJECT_MAPPER.readValue(jsonString, clazz));
     }
 
     public static <T> T jsonValue(String jsonString, ParameterizedTypeReference<T> typeReference) {
         final var javaType = OBJECT_MAPPER.constructType(typeReference.getType());
-        return Functions.Try(() -> OBJECT_MAPPER.readValue(jsonString, javaType));
+        return Try(() -> OBJECT_MAPPER.readValue(jsonString, javaType));
     }
 
     public static <T> T jsonValue(JsonNode jsonNode, Class<T> clazz) {
-        return Functions.Try(() -> OBJECT_MAPPER.convertValue(jsonNode, clazz));
+        return Try(() -> OBJECT_MAPPER.convertValue(jsonNode, clazz));
     }
 
     public static <T> List<T> jsonList(String content, Class<T> elementType) {
 
-        final var type = Parameterized.makeList(elementType);
+        final var typeReference = Parameterized.synthesizeList(elementType);
 
-        final var javaType = OBJECT_MAPPER.constructType(type);
+        return jsonValue(content, typeReference);
+    }
 
-        return Functions.Try(() -> OBJECT_MAPPER.readValue(content, javaType));
+    public static <T> Set<T> jsonSet(String content, Class<T> elementType) {
+
+        final var typeReference = Parameterized.synthesizeSet(elementType);
+
+        return jsonValue(content, typeReference);
     }
 
     public static <T> List<T> jsonList(JsonNode jsonNode, Class<T> elementType) {
 
-        final var type = Parameterized.makeList(elementType);
+        final var typeReference = Parameterized.synthesizeList(elementType);
 
-        final var javaType = OBJECT_MAPPER.constructType(type);
+        final var javaType = OBJECT_MAPPER.constructType(typeReference.getType());
 
-        return Functions.Try(() -> OBJECT_MAPPER.convertValue(jsonNode, javaType));
+        return Try(() -> OBJECT_MAPPER.convertValue(jsonNode, javaType));
     }
 
     public static <K, V> Map<K, V> jsonMap(String content, Class<K> keyType, Class<V> valueType) {
 
-        final var type = Parameterized.makeMap(keyType, valueType);
+        final var typeReference = Parameterized.synthesizeMap(keyType, valueType);
 
-        final var javaType = OBJECT_MAPPER.constructType(type);
-
-        return Functions.Try(() -> OBJECT_MAPPER.readValue(content, javaType));
+        return jsonValue(content, typeReference);
     }
 
     public static JsonNode jsonNode(Object value) {
-        return Functions.Try(() -> OBJECT_MAPPER.convertValue(value, JsonNode.class));
+        return Try(() -> OBJECT_MAPPER.convertValue(value, JsonNode.class));
     }
 
     public static JsonNode jsonNode(String value) {
-        return Functions.Try(() -> OBJECT_MAPPER.readValue(value, JsonNode.class));
+        return Try(() -> OBJECT_MAPPER.readValue(value, JsonNode.class));
     }
 
     public static JsonNode jsonNode(byte[] value){
-        return Functions.Try(() -> OBJECT_MAPPER.readValue(value, JsonNode.class));
+        return Try(() -> OBJECT_MAPPER.readValue(value, JsonNode.class));
     }
 
     public static JsonNode jsonNode(File file) {
-        return Functions.Try(() -> OBJECT_MAPPER.readValue(file, JsonNode.class));
+        return Try(() -> OBJECT_MAPPER.readValue(file, JsonNode.class));
     }
 
     public static JsonNode jsonNode(Path path) {

@@ -1,17 +1,17 @@
 package laboratory.astrea.redis.api.impl;
 
-import laboratory.astrea.redis.api.RFactory;
+import laboratory.astrea.redis.api.RProxyFactory;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public enum RFactories {
 
-    Javassist(new JavassistRFactory()),
+    Javassist(new JavassistRProxyFactory()),
 
     ;
 
     @Getter
-    private final RFactory factory;
+    private final RProxyFactory factory;
 
 }

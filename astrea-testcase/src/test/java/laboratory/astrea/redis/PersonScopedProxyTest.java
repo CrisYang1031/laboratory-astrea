@@ -15,7 +15,7 @@ public final class PersonScopedProxyTest {
     public static void main(String[] args) {
 
         final Class<?> clazz = Javassist_.create("laboratory.astrea.redis.PersonRScope$Javassist")
-                .addInterfaces(RScoped.class.getName())
+                .setInterfaces(RScoped.class.getName())
                 .setSuperClass(Person.class.getName())
                 .addField(String.format("private %s rValue;", RValue.class.getName()))
                 .addMethod("public void commit() { rValue.set(this); }")

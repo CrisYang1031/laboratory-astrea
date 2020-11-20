@@ -4,7 +4,7 @@ import org.springframework.core.ParameterizedTypeReference;
 
 import java.util.function.BiFunction;
 
-public interface RFactory {
+public interface RProxyFactory {
 
 
     <T> T proxyScopedValue(String name, Class<T> typeReference, BiFunction<String, Class<T>, RValue<T>> rValueFunction);

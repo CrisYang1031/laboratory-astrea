@@ -18,6 +18,7 @@ import java.util.function.Supplier;
 import static laboratory.astrea.buitlin.core.TopLevelFunctions.cast;
 import static laboratory.astrea.buitlin.core.TopLevelFunctions.sneakThrow;
 
+@SuppressWarnings("unused")
 public final class Functions {
 
     private Functions() {
@@ -114,30 +115,25 @@ public final class Functions {
         return cast(ALWAYS_TRUE_PREDICATE);
     }
 
+
     public static <T> Predicate<T> alwaysFalse() {
         return cast(ALWAYS_FALSE_PREDICATE);
     }
 
-    public static <T> Predicate<T> oncePredicate() {
-
-        return new Predicate<>() {
-
-            private final AtomicBoolean once = new AtomicBoolean(false);
-
-            @Override
-            public boolean test(Object o) {
-                return once.compareAndSet(false, true);
-            }
-        };
-    }
 
     public static <T> Consumer<T> onceConsumer(Consumer<T> actual) {
 
-        return new OnceConsumer<>() {
+        return new Consumer<>() {
+
+            private final AtomicBoolean once = new AtomicBoolean();
+
             @Override
-            public void actualAccept(T t) {
-                actual.accept(t);
+            public void accept(T t) {
+                if (once.compareAndSet(false, true)) {
+                    actual.accept(t);
+                }
             }
+
         };
     }
 
