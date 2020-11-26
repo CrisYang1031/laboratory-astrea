@@ -1,6 +1,6 @@
 package laboratory.astrea.buitlin.instrument;
 
-public enum ClassInstrumentFactory {
+public enum InstrumentFactory {
 
     Javassist_ {
         @Override

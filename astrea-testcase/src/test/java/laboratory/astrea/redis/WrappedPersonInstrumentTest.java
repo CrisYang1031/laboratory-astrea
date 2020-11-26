@@ -1,12 +1,11 @@
 package laboratory.astrea.redis;
 
-import laboratory.astrea.buitlin.instrument.ClassInstrument;
 import laboratory.astrea.buitlin.instrument.InstrumentGenericType;
 import laboratory.astrea.redis.api.RScoped;
 
 import java.util.List;
 
-import static laboratory.astrea.buitlin.instrument.ClassInstrumentFactory.Javassist_;
+import static laboratory.astrea.buitlin.instrument.InstrumentFactory.Javassist_;
 
 public final class WrappedPersonInstrumentTest {
 

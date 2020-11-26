@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
+import io.vavr.control.Try;
 import org.springframework.core.ParameterizedTypeReference;
 
 import java.io.File;
@@ -33,7 +34,6 @@ public final class Json {
 
     static {
 
-
         OBJECT_MAPPER = new ObjectMapper();
         OBJECT_MAPPER.enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
         OBJECT_MAPPER.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, SerializationFeature.FAIL_ON_EMPTY_BEANS);
@@ -41,7 +41,6 @@ public final class Json {
         OBJECT_MAPPER.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
         OBJECT_MAPPER.registerModules(JAVA_TIME_MODULE, PARAMETER_NAMES_MODULE, JDK_8_MODULE);
         ObjectMapper.findModules(Json.class.getClassLoader()).forEach(OBJECT_MAPPER::registerModules);
-
     }
 
 
@@ -77,13 +76,6 @@ public final class Json {
         return jsonValue(content, typeReference);
     }
 
-    public static <T> Set<T> jsonSet(String content, Class<T> elementType) {
-
-        final var typeReference = Parameterized.synthesizeSet(elementType);
-
-        return jsonValue(content, typeReference);
-    }
-
     public static <T> List<T> jsonList(JsonNode jsonNode, Class<T> elementType) {
 
         final var typeReference = Parameterized.synthesizeList(elementType);
@@ -91,6 +83,13 @@ public final class Json {
         final var javaType = OBJECT_MAPPER.constructType(typeReference.getType());
 
         return Try(() -> OBJECT_MAPPER.convertValue(jsonNode, javaType));
+    }
+
+    public static <T> Set<T> jsonSet(String content, Class<T> elementType) {
+
+        final var typeReference = Parameterized.synthesizeSet(elementType);
+
+        return jsonValue(content, typeReference);
     }
 
     public static <K, V> Map<K, V> jsonMap(String content, Class<K> keyType, Class<V> valueType) {

@@ -1,7 +1,5 @@
 package laboratory.astrea.buitlin.instrument;
 
-import laboratory.astrea.buitlin.core.Pair;
-
 import java.lang.ref.Cleaner;
 
 public interface ClassInstrument {

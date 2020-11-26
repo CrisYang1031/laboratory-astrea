@@ -4,7 +4,7 @@ import laboratory.astrea.redis.api.RAny;
 import laboratory.astrea.redis.api.RScoped;
 import laboratory.astrea.redis.api.RValue;
 
-import static laboratory.astrea.buitlin.instrument.ClassInstrumentFactory.Javassist_;
+import static laboratory.astrea.buitlin.instrument.InstrumentFactory.Javassist_;
 
 public final class ClassInstrumentTest {
 

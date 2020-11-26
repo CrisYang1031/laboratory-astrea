@@ -4,32 +4,45 @@ import javassist.CtClass;
 import javassist.bytecode.SignatureAttribute.ClassType;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static laboratory.astrea.buitlin.core.KCollection.listOf;
 
 @Slf4j
 public final class JavassistInstrument implements ClassInstrument {
 
-    private final static Set<CtClass> USED_CLASS = new HashSet<>();
+    private final static Map<CtClass, Set<String>> USED_CLASS_REFERENCE = new HashMap<>();
 
     protected final CtClass mainClass;
 
+    private final String identity = String.valueOf(System.identityHashCode(this));
 
     JavassistInstrument(String className, Function<String, CtClass> classProvider) {
         final var ctClass = classProvider.apply(className);
         attachCtClass(ctClass);
         this.mainClass = ctClass;
 
-        CLASS_INSTRUMENT_CLEANER.register(this, JavassistInstrument::cleanup);
+        final var identityReference = new AtomicReference<>(identity);
+
+        CLASS_INSTRUMENT_CLEANER.register(this, () -> {
+            try {
+                cleanup(identityReference.get());
+            } catch (Exception exception) {
+                log.warn("something wrong in CLASS_INSTRUMENT_CLEANER", exception);
+            }
+        });
     }
 
     public JavassistInstrument setInterfaces(String... interfaceNames) {
 
         final var classes = Javassist.getClasses(interfaceNames);
-        classes.forEach(USED_CLASS::add);
+        classes.forEach(this::attachCtClass);
 
         final var interfaces = classes.filter(CtClass::isInterface);
 
@@ -97,15 +110,25 @@ public final class JavassistInstrument implements ClassInstrument {
 
 
     private void attachCtClass(CtClass ctClass) {
-        synchronized (USED_CLASS) {
-            USED_CLASS.add(ctClass);
+        synchronized (USED_CLASS_REFERENCE) {
+            final var identitySet = USED_CLASS_REFERENCE.computeIfAbsent(ctClass, __ -> new HashSet<>());
+            identitySet.add(identity);
         }
     }
 
-    private static void cleanup() {
-        synchronized (USED_CLASS) {
-            USED_CLASS.forEach(CtClass::detach);
-            USED_CLASS.clear();
+    private static void cleanup(String identity) {
+        synchronized (USED_CLASS_REFERENCE) {
+            USED_CLASS_REFERENCE.forEach((ctClass, set) -> set.remove(identity));
+
+            final var toDetachClass = USED_CLASS_REFERENCE.entrySet().stream()
+                    .filter(entry -> entry.getValue().isEmpty())
+                    .map(Map.Entry::getKey)
+                    .collect(Collectors.toList());
+
+            toDetachClass.forEach(ctClass -> {
+                        USED_CLASS_REFERENCE.remove(ctClass);
+                        Javassist.detach(ctClass);
+                    });
         }
     }
 }

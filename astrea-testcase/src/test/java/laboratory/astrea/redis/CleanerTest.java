@@ -7,7 +7,7 @@ import laboratory.astrea.redis.api.RValue;
 import java.util.stream.IntStream;
 
 import static laboratory.astrea.buitlin.core.TopLevelFunctions.delay;
-import static laboratory.astrea.buitlin.instrument.ClassInstrumentFactory.Javassist_;
+import static laboratory.astrea.buitlin.instrument.InstrumentFactory.Javassist_;
 
 public final class CleanerTest {
 
@@ -28,8 +28,8 @@ public final class CleanerTest {
         });
 
 
-        for (int i = 1; i <= 10000; i++) {
-            int[] a = new int[10000];
+        for (int i = 1; i <= 1000; i++) {
+            int[] a = new int[1000000];
             try {
                 Thread.sleep(1);
             } catch (InterruptedException ignored) {
@@ -38,7 +38,7 @@ public final class CleanerTest {
 
         System.gc();
 
-        delay(1000);
+        delay(5000);
 
     }
 }

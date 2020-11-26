@@ -16,7 +16,7 @@ import java.util.function.Function;
 
 import static laboratory.astrea.buitlin.core.Parameterized.*;
 import static laboratory.astrea.buitlin.core.TopLevelFunctions.cast;
-import static laboratory.astrea.buitlin.instrument.ClassInstrumentFactory.Javassist_;
+import static laboratory.astrea.buitlin.instrument.InstrumentFactory.Javassist_;
 
 final class JavassistRProxyFactory implements RProxyFactory {
 
@@ -33,7 +33,7 @@ final class JavassistRProxyFactory implements RProxyFactory {
             final var annotationMetadata = MetadataScanner.forClassName(type.getName());
 
             if (annotationMetadata.isFinal() || !annotationMetadata.isConcrete()) {
-                throw new IllegalArgumentException("only non-final, concrete type can be accepted by RFactory - source class is: " + type);
+                throw new IllegalArgumentException("only non-final, concrete type can be accepted by RProxyFactory - source class is: " + type);
             }
 
             return Javassist_.create(nameFunction.apply(type))
@@ -61,7 +61,7 @@ final class JavassistRProxyFactory implements RProxyFactory {
             final var annotationMetadata = MetadataScanner.forClassName(type.getName());
 
             if (annotationMetadata.isFinal() || !annotationMetadata.isConcrete()) {
-                throw new IllegalArgumentException("only non-final, concrete type can be accepted by RFactory - source class is: " + type);
+                throw new IllegalArgumentException("only non-final, concrete type can be accepted by RProxyFactory - source class is: " + type);
             }
 
             return Javassist_.create(nameFunction.apply(type))

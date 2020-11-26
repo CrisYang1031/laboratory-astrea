@@ -1,6 +1,5 @@
 package laboratory.astrea.redis.spring.cache;
 
-import io.vavr.control.Try;
 import laboratory.astrea.redis.SyncConnectionContext;
 import laboratory.astrea.redis.cache.RCache;
 import laboratory.astrea.redis.cache.annotation.RCacheable;
@@ -18,6 +17,8 @@ import java.lang.reflect.Method;
 import java.time.Duration;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
+import static laboratory.astrea.buitlin.core.Functions.Try;
 
 @Slf4j
 public final class RCacheableAdvisor extends StaticMethodMatcherPointcutAdvisor {
@@ -58,7 +59,7 @@ public final class RCacheableAdvisor extends StaticMethodMatcherPointcutAdvisor 
 
             final var cacheKey = key.isEmpty() ? getMethodInvocationKeyTransformer(rCacheable.keyTransformer()).apply(methodInvocation) : key;
 
-            return rCache.get(cacheKey, __ -> Try.of(methodInvocation::proceed).get());
+            return rCache.get(cacheKey, __ -> Try(methodInvocation::proceed));
         }
 
         public RCache<Object> produceRCache(Method method, RCacheable rCacheable, String cacheName) {

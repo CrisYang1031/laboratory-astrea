@@ -1,21 +1,26 @@
 package laboratory.astrea.redis;
 
-import laboratory.astrea.buitlin.core.Parameterized;
-import org.springframework.core.ParameterizedTypeReference;
+import laboratory.astrea.buitlin.core.Pair;
+import lombok.extern.slf4j.Slf4j;
 
-import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
+import static laboratory.astrea.buitlin.core.Json.jsonString;
+
+@Slf4j
 public final class FreeTest {
 
     public static void main(String[] args) {
 
-        final ParameterizedTypeReference<List<Person>> typeReference = new ParameterizedTypeReference<>() {
-        };
+        final var pairMap = IntStream.range(0, 10)
+                .mapToObj(operand -> Pair.of(operand, Integer.toString(operand)))
+                .collect(Collectors.toMap(Pair::second, Function.identity()));
 
-        final var synthesizeGeneric = Parameterized.synthesizeGeneric(Wrapped.class, typeReference);
-
-        System.out.println(synthesizeGeneric);
-
+        System.out.println(jsonString(pairMap));
 
     }
+
 }

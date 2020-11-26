@@ -8,7 +8,7 @@ import org.springframework.beans.BeanUtils;
 
 import java.time.LocalDate;
 
-import static laboratory.astrea.buitlin.instrument.ClassInstrumentFactory.Javassist_;
+import static laboratory.astrea.buitlin.instrument.InstrumentFactory.Javassist_;
 
 public final class PersonScopedProxyTest {
 

@@ -27,7 +27,8 @@ final class SynchronousLockOperation implements LockOperation {
 
     private final PubSubOperation pubSubOperation;
 
-    private final ConcurrentMap<String, Semaphore> semaphoreMap = new ConcurrentSkipListMap<>(Comparator.comparing(String::hashCode));
+
+    private final ConcurrentMap<String, Semaphore> semaphoreMap = new ConcurrentSkipListMap<>(Comparator.naturalOrder());
 
 
     public SynchronousLockOperation(SyncConnectionContext connectionContext) {
@@ -42,7 +43,7 @@ final class SynchronousLockOperation implements LockOperation {
 
         this.pubSubOperation.subscribeMessage(LOCKING_CHANNEL, this::handleLockingKey);
 
-        this.pubSubOperation.subscribeExpiredEventMessage("@LockOperation" ,LockOperation::isLockingKey, this::handleLockingKey);
+        this.pubSubOperation.subscribeExpiredEventMessage("@LockOperation", LockOperation::isLockingKey, this::handleLockingKey);
     }
 
 

@@ -26,7 +26,7 @@ public final class Pair<T, R> {
     }
 
     @JsonCreator
-    public static <T, R> Pair<T, R> of(@JsonProperty("f") T first, @JsonProperty("s") R second) {
+    public static <T, R> Pair<T, R> of(@JsonProperty("_1") T first, @JsonProperty("_2") R second) {
         return new Pair<>(first, second);
     }
 

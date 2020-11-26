@@ -53,7 +53,9 @@ public class Javassist {
         return List.of(className).map(Javassist::getClass);
     }
 
-
+    public static void setName(CtClass ctClass, String name){
+        ctClass.setName(name);
+    }
 
     public static void setInterface(CtClass ctClass, Iterable<CtClass> interfaces) {
         ctClass.setInterfaces(array(interfaces, CtClass[]::new));
@@ -106,7 +108,6 @@ public class Javassist {
         return new ClassType(genericType.getClassName(), typeParameters);
     }
 
-
     public static void addField(CtClass ctClass, String src) {
         Try(() -> ctClass.addField(makeField(ctClass, src)));
     }
@@ -132,5 +133,9 @@ public class Javassist {
         return Try((CheckedFunction0<byte[]>) ctClass::toBytecode);
     }
 
+    public static void detach(CtClass ctClass){
+        ctClass.detach();
+        System.out.println(ctClass.getName() + " has been detached");
+    }
 
 }

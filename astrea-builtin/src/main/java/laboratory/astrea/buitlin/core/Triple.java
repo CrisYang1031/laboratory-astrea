@@ -30,7 +30,6 @@ public final class Triple<T, R, V> {
         return (Triple<T, R, V>) EMPTY;
     }
 
-
     public void decompose(Consumer3<T, R, V> decomposer) {
         decomposer.accept(first, second, third);
     }
