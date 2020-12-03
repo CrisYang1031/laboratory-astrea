@@ -14,19 +14,18 @@ public final class Pair<T, R> {
 
     private static final Pair<?, ?> EMPTY = Pair.of(null, null);
 
-    @JsonProperty("_1")
+    @JsonProperty("f")
     public final T first;
 
-    @JsonProperty("_2")
+    @JsonProperty("s")
     public final R second;
 
-    private Pair(T first, R second) {
+    public Pair(T first, R second) {
         this.first = first;
         this.second = second;
     }
 
-    @JsonCreator
-    public static <T, R> Pair<T, R> of(@JsonProperty("_1") T first, @JsonProperty("_2") R second) {
+    public static <T, R> Pair<T, R> of(T first, R second) {
         return new Pair<>(first, second);
     }
 

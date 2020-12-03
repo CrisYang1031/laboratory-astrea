@@ -33,8 +33,8 @@ final class SynchronousLockOperation implements LockOperation {
 
     public SynchronousLockOperation(SyncConnectionContext connectionContext) {
 
-        this.valueOperation = new SynchronousValueOperation(connectionContext);
-        this.pubSubOperation = new SynchronousPubSubOperation(connectionContext);
+        this.valueOperation = connectionContext.syncOperationFactory().valueOperation();
+        this.pubSubOperation = connectionContext.syncOperationFactory().pubSubOperation();
 
         postConstruct();
     }
