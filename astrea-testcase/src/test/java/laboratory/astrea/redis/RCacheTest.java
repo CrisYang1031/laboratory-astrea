@@ -29,6 +29,7 @@ public final class RCacheTest {
             final var rCache = RCache.<Pair<String, LocalDateTime>>builder()
                     .cacheName(cacheName)
                     .connectionContext(connectionContext)
+                    .type(typeReference)
                     .timeout(Duration.ofSeconds(20))
                     .caffeineCustomizer(caffeine -> caffeine.removalListener(
                             (key, value, cause) -> log.info("INFO#RCache[{}] - {} has been removed, cause: {}", cacheName, key, cause)))                    .type(typeReference)
