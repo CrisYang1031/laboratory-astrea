@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: test-case
+
+  main:
+    lazy-initialization: true
+
+#  profiles:
+#    include: rabbitmq

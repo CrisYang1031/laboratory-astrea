@@ -20,11 +20,41 @@
 		<module>astrea-spring</module>
 		<module>astrea-redis</module>
         <module>astrea-testcase</module>
+        <module>astrea-events</module>
     </modules>
 
 	<properties>
 		<java.version>11</java.version>
+		<astrea-builtin.version>1.0.0-SNAPSHOT</astrea-builtin.version>
+		<astrea-redis.version>1.0.0-SNAPSHOT</astrea-redis.version>
+		<astrea-events.version>1.0.0-SNAPSHOT</astrea-events.version>
+		<astrea-spring.version>1.0.0-SNAPSHOT</astrea-spring.version>
 	</properties>
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>laboratory</groupId>
+				<artifactId>astrea-builtin</artifactId>
+				<version>${astrea-builtin.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>laboratory</groupId>
+				<artifactId>astrea-redis</artifactId>
+				<version>${astrea-redis.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>laboratory</groupId>
+				<artifactId>astrea-events</artifactId>
+				<version>${astrea-events.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>laboratory</groupId>
+				<artifactId>astrea-spring</artifactId>
+				<version>${astrea-spring.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
 
 
 	<dependencies>

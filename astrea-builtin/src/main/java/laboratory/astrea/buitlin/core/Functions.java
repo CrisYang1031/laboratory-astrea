@@ -66,7 +66,31 @@ public final class Functions {
         return t -> mapping.andThen(andThen).apply(t);
     }
 
-    public static <T, R> Function<T, R> Function(CheckedFunction1<T, R> checkedFunction) {
+
+    public static Runnable unchecked(CheckedRunnable checkedRunnable){
+        return () -> {
+            try {
+                checkedRunnable.run();
+            } catch (Throwable throwable) {
+                sneakThrow(throwable);
+            }
+        };
+    }
+
+
+
+    public static <T> Supplier<T> unchecked(CheckedFunction0<T> checkedFunction0){
+        return () -> {
+            try {
+                return checkedFunction0.apply();
+            } catch (Throwable throwable) {
+                return sneakThrow(throwable);
+            }
+        };
+    }
+
+
+    public static <T, R> Function<T, R> unchecked(CheckedFunction1<T, R> checkedFunction) {
         return t -> {
             try {
                 return checkedFunction.apply(t);
@@ -76,7 +100,7 @@ public final class Functions {
         };
     }
 
-    public static <T> Consumer<T> Consumer(CheckedConsumer<T> checkedConsumer) {
+    public static <T> Consumer<T> unchecked(CheckedConsumer<T> checkedConsumer) {
         return t -> {
             try {
                 checkedConsumer.accept(t);

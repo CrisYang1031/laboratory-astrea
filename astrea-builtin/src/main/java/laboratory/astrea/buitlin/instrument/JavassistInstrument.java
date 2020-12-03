@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -17,22 +17,25 @@ import static laboratory.astrea.buitlin.core.KCollection.listOf;
 @Slf4j
 public final class JavassistInstrument implements ClassInstrument {
 
-    private final static Map<CtClass, Set<String>> USED_CLASS_REFERENCE = new HashMap<>();
+    private final static Map<CtClass, Set<Integer>> USED_CLASS_REFERENCE = new HashMap<>();
+
+    private final static AtomicInteger SEQUENCE = new AtomicInteger();
 
     protected final CtClass mainClass;
 
-    private final String identity = String.valueOf(System.identityHashCode(this));
+    private final Integer identity = SEQUENCE.incrementAndGet() & Integer.MAX_VALUE;
 
     JavassistInstrument(String className, Function<String, CtClass> classProvider) {
         final var ctClass = classProvider.apply(className);
         attachCtClass(ctClass);
         this.mainClass = ctClass;
 
-        final var identityReference = new AtomicReference<>(identity);
+        //noinspection UnnecessaryLocalVariable
+        final var _sequence = identity;
 
         CLASS_INSTRUMENT_CLEANER.register(this, () -> {
             try {
-                cleanup(identityReference.get());
+                cleanup(_sequence);
             } catch (Exception exception) {
                 log.warn("something wrong in CLASS_INSTRUMENT_CLEANER", exception);
             }
@@ -116,7 +119,7 @@ public final class JavassistInstrument implements ClassInstrument {
         }
     }
 
-    private static void cleanup(String identity) {
+    private static void cleanup(Integer identity) {
         synchronized (USED_CLASS_REFERENCE) {
             USED_CLASS_REFERENCE.forEach((ctClass, set) -> set.remove(identity));
 
@@ -126,9 +129,9 @@ public final class JavassistInstrument implements ClassInstrument {
                     .collect(Collectors.toList());
 
             toDetachClass.forEach(ctClass -> {
-                        USED_CLASS_REFERENCE.remove(ctClass);
-                        Javassist.detach(ctClass);
-                    });
+                USED_CLASS_REFERENCE.remove(ctClass);
+                Javassist.detach(ctClass);
+            });
         }
     }
 }

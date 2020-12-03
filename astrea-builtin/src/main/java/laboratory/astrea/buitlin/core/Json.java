@@ -40,7 +40,6 @@ public final class Json {
         OBJECT_MAPPER.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         OBJECT_MAPPER.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
         OBJECT_MAPPER.registerModules(JAVA_TIME_MODULE, PARAMETER_NAMES_MODULE, JDK_8_MODULE);
-        ObjectMapper.findModules(Json.class.getClassLoader()).forEach(OBJECT_MAPPER::registerModules);
     }
 
 
@@ -49,6 +48,10 @@ public final class Json {
     }
 
 
+    public static ObjectMapper shared(){
+        return OBJECT_MAPPER;
+    }
+
     public static String jsonString(Object value) {
         if (value instanceof String) {
             return (String) value;
@@ -56,8 +59,13 @@ public final class Json {
         return Try(() -> OBJECT_MAPPER.writeValueAsString(value));
     }
 
+
     public static <T> T jsonValue(String jsonString, Class<T> clazz) {
         return Try(() -> OBJECT_MAPPER.readValue(jsonString, clazz));
+    }
+
+    public static <T> T jsonValue(byte[] byteArray, Class<T> clazz) {
+        return Try(() -> OBJECT_MAPPER.readValue(byteArray, clazz));
     }
 
     public static <T> T jsonValue(String jsonString, ParameterizedTypeReference<T> typeReference) {

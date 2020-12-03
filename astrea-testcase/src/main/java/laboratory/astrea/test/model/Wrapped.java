@@ -1,4 +1,4 @@
-package laboratory.astrea.redis;
+package laboratory.astrea.test.model;
 
 import lombok.Data;
 

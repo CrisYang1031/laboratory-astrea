@@ -1,0 +1,6 @@
+spring:
+  rabbitmq:
+    host: test-rabbitmq.hzc.cc
+    username: hzc-rabbitmq-test
+    password: hzcisno1
+    port: 5672

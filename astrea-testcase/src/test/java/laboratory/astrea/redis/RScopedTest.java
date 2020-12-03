@@ -1,6 +1,8 @@
 package laboratory.astrea.redis;
 
 
+import laboratory.astrea.test.model.Person;
+import laboratory.astrea.test.model.Wrapped;
 import laboratory.astrea.redis.api.Radiance;
 import laboratory.astrea.test.TestKit;
 import org.springframework.core.ParameterizedTypeReference;

@@ -1,6 +1,7 @@
 package laboratory.astrea.redis;
 
 import laboratory.astrea.buitlin.instrument.InstrumentGenericType;
+import laboratory.astrea.test.model.Wrapped;
 import laboratory.astrea.redis.api.RScoped;
 
 import java.util.List;
@@ -11,8 +12,6 @@ public final class WrappedPersonInstrumentTest {
 
 
     public static void main(String[] args) {
-
-
 
         Javassist_.create("laboratory.astrea.redis.PersonRScope$Javassist")
                 .setInterfaces(RScoped.class.getName())

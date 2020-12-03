@@ -1,6 +1,7 @@
 package laboratory.astrea.redis;
 
 import laboratory.astrea.buitlin.instrument.Javassist;
+import laboratory.astrea.test.model.Wrapped;
 import laboratory.astrea.redis.api.RScoped;
 
 import java.util.List;
@@ -10,10 +11,6 @@ import static javassist.bytecode.SignatureAttribute.*;
 public final class GenericTypeInstrumentTest {
 
     public static void main(String[] args) throws Exception {
-
-//        Javassist_.create("laboratory.astrea.redis.WrappedInstrument$Javassist")
-//                .setGenericSuperClass(Wrapped.class.getName(), Person.class.getName())
-//                .toClass();
 
         final var ctClass = Javassist.makeClass("laboratory.astrea.redis.WrappedInstrument$Javassist");
         ctClass.setSuperclass(Javassist.getClass(Wrapped.class.getName()));

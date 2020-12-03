@@ -26,6 +26,7 @@ import java.util.Optional;
 public class RadianceAutoConfiguration {
 
 
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
     @Bean
     @ConditionalOnMissingBean
     public SyncConnectionContext syncConnectionContext(RedisProperties redisProperties, ClientResources clientResources) {

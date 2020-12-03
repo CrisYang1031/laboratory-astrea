@@ -2,6 +2,7 @@ package laboratory.astrea.buitlin.core;
 
 import com.google.common.base.Splitter;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Supplier;
@@ -48,5 +49,9 @@ public final class Strings {
 
     public static String joinedString(Iterable<? extends CharSequence> elements) {
         return String.join(",", elements);
+    }
+
+    public static String bytesToString(byte[] bytes){
+        return new String(bytes, StandardCharsets.UTF_8);
     }
 }
