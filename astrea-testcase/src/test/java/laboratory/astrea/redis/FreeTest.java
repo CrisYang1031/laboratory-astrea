@@ -13,7 +13,7 @@ public final class FreeTest {
         final var now = LocalDateTime.parse("2020-12-03T10:00:00");
         System.out.println(now);
 
-        final var beijingZone = now.atZone(ZoneId.of("8"));
+        final var beijingZone = now.atZone(ZoneId.of("+8"));
         System.out.println(beijingZone);
 //
         final var zonedDateTime = beijingZone.withZoneSameInstant(ZoneId.of("America/Chicago"));

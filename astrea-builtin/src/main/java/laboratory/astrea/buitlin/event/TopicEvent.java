@@ -18,16 +18,9 @@ public interface TopicEvent<Topic, Content> {
     Duration delay();
 
 
-    void reply(Object result);
-
-
-    <R> Mono<R> result();
-
-
     static <Topic, Content> TopicEvent<Topic, Content> of(Topic topic, Content content) {
         return new Companion<>(topic, content);
     }
-
 
     @Getter
     class Companion<Topic, Content> implements TopicEvent<Topic, Content> {
@@ -37,8 +30,6 @@ public interface TopicEvent<Topic, Content> {
         private final Content content;
 
         private final Duration delay;
-
-        private final CompletableFuture<Object> resultFuture = new CompletableFuture<>();
 
         public Companion(Topic topic, Content content) {
             this.topic = topic;
@@ -51,16 +42,6 @@ public interface TopicEvent<Topic, Content> {
             return delay;
         }
 
-        @Override
-        public void reply(Object result) {
-            resultFuture.complete(result);
-        }
-
-        @Override
-        public <R> Mono<R> result() {
-            //noinspection unchecked
-            return (Mono<R>) Mono.fromCompletionStage(resultFuture);
-        }
     }
 
 }

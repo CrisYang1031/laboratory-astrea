@@ -2,9 +2,13 @@ package laboratory.astrea.event.spring;
 
 import laboratory.astrea.buitlin.core.Functions;
 import laboratory.astrea.buitlin.core.Json;
+import laboratory.astrea.event.MessageQueueEventDispatcher;
+import laboratory.astrea.event.MessageQueueEventReceiver;
+import laboratory.astrea.event.RabbitEventListener;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionNameStrategy;
 import org.springframework.amqp.rabbit.connection.SimplePropertyValueConnectionNameStrategy;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -23,19 +27,19 @@ public class RabbitEventAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public ConnectionNameStrategy connectionNameStrategy() {
+    ConnectionNameStrategy connectionNameStrategy() {
         return new SimplePropertyValueConnectionNameStrategy("spring.application.name");
     }
 
     @Bean
     @ConditionalOnMissingBean(value = MessageConverter.class)
-    public MessageConverter jsonMessageConverter() {
+    MessageConverter jsonMessageConverter() {
         return new Jackson2JsonMessageConverter(Json.shared());
     }
 
 
     @Bean
-    public EventPropertiesAccessor eventPropertiesAccessor(EventProperties eventProperties, PlaceholdersResolver placeholdersResolver) {
+    EventPropertiesAccessor eventPropertiesAccessor(EventProperties eventProperties, PlaceholdersResolver placeholdersResolver) {
         return new EventPropertiesAccessor(eventProperties, placeholdersResolver);
     }
 
@@ -51,12 +55,12 @@ public class RabbitEventAutoConfiguration {
     });
 
     @EventListener(value = ApplicationStartedEvent.class)
-    public void rabbitComponentRegister(ApplicationStartedEvent startedEvent){
+    public void rabbitComponentRegister(ApplicationStartedEvent startedEvent) {
         onceStartedEventConsumer.accept(startedEvent);
     }
 
     @Bean
-    public Declarables rabbitDeclarables(EventPropertiesAccessor propertiesAccessor){
+    Declarables rabbitDeclarables(EventPropertiesAccessor propertiesAccessor) {
 
         final var eventExchange = ExchangeBuilder.topicExchange(propertiesAccessor.getPublisherName())
                 .durable(true)
@@ -91,10 +95,21 @@ public class RabbitEventAutoConfiguration {
     }
 
     @Bean
-    public String[] queueNamesForListener(Declarables declarables){
+    String[] queueNamesForListener(Declarables declarables) {
         return declarables.getDeclarablesByType(Queue.class)
                 .stream()
                 .map(Queue::getName)
                 .toArray(String[]::new);
+    }
+
+    @Bean
+    RabbitEventListener rabbitEventListener() {
+        return new RabbitEventListener();
+    }
+
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+    @Bean
+    MessageQueueEventDispatcher messageQueueEventDispatcher(EventPropertiesAccessor eventPropertiesAccessor, RabbitTemplate rabbitTemplate) {
+        return new MessageQueueEventDispatcher(new MessageQueueEventReceiver<>(eventPropertiesAccessor, rabbitTemplate));
     }
 }

@@ -14,6 +14,7 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.event.EventListener;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
@@ -124,7 +125,7 @@ public class AstreaApplication {
 
 
     @GetMapping
-    Object echo() {
+    Object echo(@RequestBody Person person) {
         return LocalDateTime.now();
     }
 

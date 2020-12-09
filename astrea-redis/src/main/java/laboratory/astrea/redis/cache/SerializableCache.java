@@ -37,6 +37,7 @@ public abstract class SerializableCache<V> {
         return stringCodec.decode(value, clazz);
     }
 
+    @SuppressWarnings("SameParameterValue")
     protected <T> T deserializeOther(String value, ParameterizedTypeReference<T> typeReference) {
         return stringCodec.decode(value, typeReference);
     }

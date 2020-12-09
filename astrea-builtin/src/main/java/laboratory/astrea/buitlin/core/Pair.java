@@ -1,10 +1,12 @@
 package laboratory.astrea.buitlin.core;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.EqualsAndHashCode;
 
-import java.util.*;
+import java.util.AbstractMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -88,6 +90,6 @@ public final class Pair<T, R> {
 
     @Override
     public String toString() {
-        return "{" + "_1=" + first + ", _2=" + second + '}';
+        return "{" + "f=" + first + ", s=" + second + '}';
     }
 }

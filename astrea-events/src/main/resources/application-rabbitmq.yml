@@ -4,3 +4,6 @@ spring:
     username: hzc-rabbitmq-test
     password: hzcisno1
     port: 5672
+    listener:
+      simple:
+        concurrency: 1

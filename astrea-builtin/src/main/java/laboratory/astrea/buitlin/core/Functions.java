@@ -67,7 +67,7 @@ public final class Functions {
     }
 
 
-    public static Runnable unchecked(CheckedRunnable checkedRunnable){
+    public static Runnable uncheckedRunnable(CheckedRunnable checkedRunnable){
         return () -> {
             try {
                 checkedRunnable.run();
@@ -79,7 +79,7 @@ public final class Functions {
 
 
 
-    public static <T> Supplier<T> unchecked(CheckedFunction0<T> checkedFunction0){
+    public static <T> Supplier<T> uncheckedSupplier(CheckedFunction0<T> checkedFunction0){
         return () -> {
             try {
                 return checkedFunction0.apply();
@@ -90,7 +90,7 @@ public final class Functions {
     }
 
 
-    public static <T, R> Function<T, R> unchecked(CheckedFunction1<T, R> checkedFunction) {
+    public static <T, R> Function<T, R> uncheckedFunction(CheckedFunction1<T, R> checkedFunction) {
         return t -> {
             try {
                 return checkedFunction.apply(t);
@@ -100,7 +100,7 @@ public final class Functions {
         };
     }
 
-    public static <T> Consumer<T> unchecked(CheckedConsumer<T> checkedConsumer) {
+    public static <T> Consumer<T> uncheckedConsumer(CheckedConsumer<T> checkedConsumer) {
         return t -> {
             try {
                 checkedConsumer.accept(t);
