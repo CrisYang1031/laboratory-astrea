@@ -8,7 +8,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public final class MessageQueueEventDispatcher implements TopicEventDispatcher {
 
-    private final MessageQueueEventReceiver<Object, MessageQueueTopicEvent<?, ?>> messageQueueEventReceiver;
+    private final MessageQueueEventReceiver<?> messageQueueEventReceiver;
 
     @Override
     public TopicEventReceiver<?, ?> dispatch(TopicEvent<?, ?> topicEvent) {

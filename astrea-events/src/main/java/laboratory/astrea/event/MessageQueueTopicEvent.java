@@ -2,13 +2,13 @@ package laboratory.astrea.event;
 
 import laboratory.astrea.buitlin.event.TopicEvent;
 
-public interface MessageQueueTopicEvent<T, C> extends TopicEvent<T, C> {
+public interface MessageQueueTopicEvent<C> extends TopicEvent<String, C> {
 
 
     PublishType publishType();
 
 
-    static <T, C> TopicEvent<Object, MessageQueueTopicEvent<T, C>> topicEvent(T topic, C content) {
+    static <T, C> TopicEvent<Object, MessageQueueTopicEvent<C>> topicEvent(String topic, C content) {
 
         final var messageQueueEvent = new Companion<>(topic, content, PublishType.TOPIC);
 
@@ -16,7 +16,7 @@ public interface MessageQueueTopicEvent<T, C> extends TopicEvent<T, C> {
     }
 
 
-    static <T, C> TopicEvent<Object, MessageQueueTopicEvent<T, C>> broadcastEvent(T topic, C content) {
+    static <T, C> TopicEvent<Object, MessageQueueTopicEvent<C>> broadcastEvent(String topic, C content) {
 
         final var messageQueueEvent = new Companion<>(topic, content, PublishType.BROADCAST);
 
@@ -24,11 +24,11 @@ public interface MessageQueueTopicEvent<T, C> extends TopicEvent<T, C> {
     }
 
 
-    class Companion<Topic, Content> extends TopicEvent.Companion<Topic, Content> implements MessageQueueTopicEvent<Topic, Content> {
+    class Companion<Content> extends TopicEvent.Companion<String, Content> implements MessageQueueTopicEvent<Content> {
 
         private final PublishType publishType;
 
-        Companion(Topic topic, Content content, PublishType publishType) {
+        Companion(String topic, Content content, PublishType publishType) {
             super(topic, content);
             this.publishType = publishType;
         }

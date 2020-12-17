@@ -1,25 +1,31 @@
 package laboratory.astrea.redis;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
+import lombok.extern.slf4j.Slf4j;
+import reactor.core.publisher.Flux;
+import reactor.core.scheduler.Schedulers;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+@Slf4j
 public final class FreeTest {
 
     public static void main(String[] args) {
 
-        final var now = LocalDateTime.parse("2020-12-03T10:00:00");
-        System.out.println(now);
+        final var executorService = Executors.newCachedThreadPool();
 
-        final var beijingZone = now.atZone(ZoneId.of("+8"));
-        System.out.println(beijingZone);
-//
-        final var zonedDateTime = beijingZone.withZoneSameInstant(ZoneId.of("America/Chicago"));
 
-        System.out.println(zonedDateTime.toLocalDateTime());
-
+        Flux.range(0, 10)
+//                .parallel()
+//                .runOn(Schedulers.boundedElastic())
+                .log()
+//                .sequential()
+                .map(integer -> {
+                    log.info("value is {}", integer);
+                    return String.valueOf(integer);
+                })
+                .flatMap(s -> Flux.just(123,456))
+                .blockLast();
 
     }
 }

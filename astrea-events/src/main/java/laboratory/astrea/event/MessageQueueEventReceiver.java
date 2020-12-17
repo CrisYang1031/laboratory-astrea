@@ -9,14 +9,14 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import static io.vavr.API.*;
 
 @RequiredArgsConstructor
-public final class MessageQueueEventReceiver<T, C> extends AbstractTopicEventReceiver<Object, MessageQueueTopicEvent<T, C>> {
+public final class MessageQueueEventReceiver<C> extends AbstractTopicEventReceiver<Object, MessageQueueTopicEvent<C>> {
 
     private final EventPropertiesAccessor eventPropertiesAccessor;
 
     private final RabbitTemplate rabbitTemplate;
 
     @Override
-    public void accept(TopicEvent<Object, MessageQueueTopicEvent<T, C>> topicEvent) {
+    public void accept(TopicEvent<Object, MessageQueueTopicEvent<C>> topicEvent) {
 
         final var messageQueueEvent = topicEvent.getContent();
 
@@ -27,28 +27,28 @@ public final class MessageQueueEventReceiver<T, C> extends AbstractTopicEventRec
     }
 
 
-    private void sendTopicMessage(MessageQueueTopicEvent<T, C> messageQueueEvent) {
+    private void sendTopicMessage(MessageQueueTopicEvent<C> messageQueueEvent) {
 
         publishEventMessage(messageQueueEvent, eventPropertiesAccessor.getTopicRoutineKey());
     }
 
-    private void sendBroadcastMessage(MessageQueueTopicEvent<T, C> messageQueueEvent) {
+    private void sendBroadcastMessage(MessageQueueTopicEvent<C> messageQueueEvent) {
 
         publishEventMessage(messageQueueEvent, eventPropertiesAccessor.getBroadcastRoutineKey());
     }
 
-    private void publishEventMessage(MessageQueueTopicEvent<T, C> messageQueueEvent, String routineKey) {
+    private void publishEventMessage(MessageQueueTopicEvent<C> messageQueueEvent, String routineKey) {
 
         final var publisherName = eventPropertiesAccessor.getPublisherName();
 
         rabbitTemplate.convertAndSend(publisherName, routineKey, messageQueueEvent);
     }
 
-    private boolean isBroadcastEvent(MessageQueueTopicEvent<T, C> event) {
+    private boolean isBroadcastEvent(MessageQueueTopicEvent<C> event) {
         return event.publishType() == PublishType.BROADCAST;
     }
 
-    private boolean isTopicEvent(MessageQueueTopicEvent<T, C> event) {
+    private boolean isTopicEvent(MessageQueueTopicEvent<C> event) {
         return event.publishType() == PublishType.TOPIC;
     }
 

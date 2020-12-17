@@ -44,7 +44,7 @@ public final class Json {
     }
 
 
-    public static ObjectMapper shared(){
+    public static ObjectMapper shared() {
         return OBJECT_MAPPER;
     }
 
@@ -62,6 +62,11 @@ public final class Json {
 
     public static <T> T jsonValue(byte[] byteArray, Class<T> clazz) {
         return Try(() -> OBJECT_MAPPER.readValue(byteArray, clazz));
+    }
+
+    public static <T> T jsonValue(byte[] byteArray, ParameterizedTypeReference<T> typeReference) {
+        final var javaType = OBJECT_MAPPER.constructType(typeReference.getType());
+        return Try(() -> OBJECT_MAPPER.readValue(byteArray, javaType));
     }
 
     public static <T> T jsonValue(String jsonString, ParameterizedTypeReference<T> typeReference) {
@@ -111,7 +116,7 @@ public final class Json {
         return Try(() -> OBJECT_MAPPER.readValue(value, JsonNode.class));
     }
 
-    public static JsonNode jsonNode(byte[] value){
+    public static JsonNode jsonNode(byte[] value) {
         return Try(() -> OBJECT_MAPPER.readValue(value, JsonNode.class));
     }
 
@@ -132,11 +137,11 @@ public final class Json {
         return OBJECT_MAPPER.convertValue(value, javaType);
     }
 
-    public static boolean isEmptyObject(String value){
+    public static boolean isEmptyObject(String value) {
         return EMPTY_OBJECT.equals(value);
     }
 
-    public static Predicate<String> emptyObject(){
+    public static Predicate<String> emptyObject() {
         return EMPTY_OBJECT::equals;
     }
 

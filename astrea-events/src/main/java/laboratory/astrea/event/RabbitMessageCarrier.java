@@ -1,9 +1,12 @@
 package laboratory.astrea.event;
 
 import com.rabbitmq.client.Channel;
+import laboratory.astrea.buitlin.core.Json;
 import org.springframework.amqp.core.Message;
+import org.springframework.core.ParameterizedTypeReference;
 
 import static laboratory.astrea.buitlin.core.Functions.Try;
+import static laboratory.astrea.buitlin.core.Json.jsonValue;
 
 public final class RabbitMessageCarrier implements MessageCarrier {
 
@@ -11,13 +14,11 @@ public final class RabbitMessageCarrier implements MessageCarrier {
 
     private final Channel channel;
 
-    private final Object payload;
-
+    private Object payload;
 
     public RabbitMessageCarrier(Message message, Channel channel, Object payload) {
         this.message = message;
         this.channel = channel;
-        this.payload = payload;
     }
 
 
@@ -27,10 +28,16 @@ public final class RabbitMessageCarrier implements MessageCarrier {
     }
 
     @Override
-    public <T> T payload() {
+    public <T> T payload(Class<T> clazz) {
         //noinspection unchecked
-        return (T) payload;
+        return (T) (payload == null ? payload = jsonValue(message.getBody(), clazz)  : payload);
     }
+
+    @Override
+    public <T> T payload(ParameterizedTypeReference<T> typeReference) {
+        return null;
+    }
+
 
     @Override
     public void ack() {
