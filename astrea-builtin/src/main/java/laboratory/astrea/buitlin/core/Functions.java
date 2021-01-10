@@ -128,7 +128,7 @@ public final class Functions {
 
     @Contract(pure = true)
     @NotNull
-    public static <T> Supplier<T> runnableSupplier(Runnable runnable) {
+    public static Supplier<Void> runnableSupplier(Runnable runnable) {
         return () -> {
             runnable.run();
             return null;

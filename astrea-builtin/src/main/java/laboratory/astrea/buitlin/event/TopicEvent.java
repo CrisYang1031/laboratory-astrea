@@ -1,10 +1,8 @@
 package laboratory.astrea.buitlin.event;
 
 import lombok.Getter;
-import reactor.core.publisher.Mono;
 
 import java.time.Duration;
-import java.util.concurrent.CompletableFuture;
 
 public interface TopicEvent<Topic, Content> {
 

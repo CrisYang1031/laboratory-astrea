@@ -29,7 +29,6 @@ public final class Json {
     private static final ObjectMapper OBJECT_MAPPER;
 
     static {
-
         OBJECT_MAPPER = new ObjectMapper();
         OBJECT_MAPPER.enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
         OBJECT_MAPPER.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, SerializationFeature.FAIL_ON_EMPTY_BEANS);
@@ -37,6 +36,7 @@ public final class Json {
         OBJECT_MAPPER.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
         OBJECT_MAPPER.registerModules(JAVA_TIME_MODULE, PARAMETER_NAMES_MODULE, JDK_8_MODULE);
     }
+
 
 
     private Json() {
@@ -113,15 +113,15 @@ public final class Json {
     }
 
     public static JsonNode jsonNode(String value) {
-        return Try(() -> OBJECT_MAPPER.readValue(value, JsonNode.class));
+        return Try(() -> OBJECT_MAPPER.readTree(value));
     }
 
     public static JsonNode jsonNode(byte[] value) {
-        return Try(() -> OBJECT_MAPPER.readValue(value, JsonNode.class));
+        return Try(() -> OBJECT_MAPPER.readTree(value));
     }
 
     public static JsonNode jsonNode(File file) {
-        return Try(() -> OBJECT_MAPPER.readValue(file, JsonNode.class));
+        return Try(() -> OBJECT_MAPPER.readTree(file));
     }
 
     public static JsonNode jsonNode(Path path) {
